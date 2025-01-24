@@ -89,8 +89,8 @@ Second and third dockerfile depends on the first.
 This will create 3 docker images named `r_cluq, r_var_cl, r_sub_cl`.
 ```
 sudo docker build -f Dock_R_clique -t r_cliq .   # for the package only
-sudo docker build -f Dock_R_clique -t r_var_cl .   # for variable clustering tests
-sudo docker build -f Dock_R_clique -t r_sub_cl .   # for subject clustering
+sudo docker build -f Dock_var_clusters -t r_var_cl .   # for variable clustering tests
+sudo docker build -f Dock_subject_clusters -t r_sub_cl .   # for subject clustering
 ```
 
 Afterwards, running `docker run` will open up microenvironment in which it is possible to run all the tests.
@@ -111,6 +111,11 @@ sudo docker run -v /var/run/docker.sock:/var/run/docker.sock \
 ```
 
 ## Running the computational tests
+
+Scripts starting with `devel_` prefix are meant to be run before the main, computationally heavy tasks.
+
+`v` suffix refers to scripts for variable clustering problem, `s` -- for sample clustering.
+
 
 ### Variable clustering
 
