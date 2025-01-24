@@ -11,7 +11,12 @@ This respository corresponds to the manuscript submission for ISMB 2025:
 # Structure of the repository
 
 This file contains information on input data and implementation of our numerical experiments.
-Rendered PDFs of Rmd notebooks contain additional docummentation and some extended results. 
+
+Rendered PDFs of Rmd notebooks contain additional docummentation and some extended results (in particular, referenced table of XYZ).
+
+`.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
+
+Subdirectories `B_200`, `B_1394` ... are set up to contain results from multiple random trials in our experiments.
 
 ## Data information
 
