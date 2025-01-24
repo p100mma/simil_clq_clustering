@@ -14,7 +14,7 @@ This file contains information on input data and implementation of our numerical
 
 Rendered html of Rmd notebooks in `Rendered_docs` contain additional docummentation and some extended results. In particular:
 
-1. [SimNetClique](https://htmlpreview.github.io/https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
+1. [SimNetClique](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
 2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
