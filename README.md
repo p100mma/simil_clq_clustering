@@ -26,7 +26,7 @@ This file contains information on input data and implementation of our numerical
 
 ### Molecular tumor subtypes problem (Leuk_18)
 
-Preprocessed data is available on zenodo: https://doi.org/10.1111/j.1365-2141.2008.07261
+Preprocessed data is available on zenodo: [https://doi.org/10.1111/j.1365-2141.2008.07261](https://doi.org/10.5281/zenodo.14729079)
 
 `trainLeukemia.RData` - quantile normalized gene expression data (Affymetrix HG-U133 Plus 2.0 array) from the MILE (Microarray Innovations In LEukemia) program<sup>1</sup> (ArrayExpress, ID:GEOD-13159)
 Data pre-processing and all analyses were conducted using the open-source statistical software R v3.4.3 (R Core Team, 2017a).
