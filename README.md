@@ -44,12 +44,60 @@ References:
 
 # Implementation details
 
-implementation of CliqueSimNet is shared in form of 2 R packages which are included also in this repository for reproduciblity reasons:
+implementation of CliqueSimNet is shared in form of 2 R packages which are held frozen for reproduciblity reasons:
 
 - [cliqueClusteR](https://github.com/p100mma/cliqueClusteR)
 - [cliquePartitoneR](https://github.com/p100mma/cliquePartitioneR)
-- 
+
 Installation of each package and its usage is docummented in respective repositories. This repository contains only instructions on how to reproduce our experimental results and additional information about methods. 
 
-# How tp run using docker
-  
+# How to run our code
+
+## Downloading the data and code
+
+1. clone the github repository:
+
+```
+git clone https://github.com/p100mma/simil_clq_clustering
+```
+
+2. Inside the main folder of the repository, download 2 dependencies (CliqueNetSim implementation):
+
+```
+cd simil_clq_clustering
+git clone https://github.com/p100mma/cliquePartitioneR
+git clone https://github.com/p100mma/cliqueClusteR
+```
+
+3. For launching tests on  `Leuk_18` dataset, download preprocessed data from [Zenodo](https://doi.org/10.5281/zenodo.14729079) (note the file size requirements: 841 Mb), either manually (and put in the main directory) or by command below (launched inside main folder of respository): 
+
+```
+curl --output trainLeukemia.RData https://zenodo.org/records/14729079/files/trainLeukemia.RData
+```
+## Set un the environment using docker (4.66 GB total)
+
+There are 3 dockerfiles:
+
+- `Dock_R_clique` - R with CliqueNetSim and dependencies
+- `Dock_var_clusters` - dependencies for variable clustering
+- `Dock_subject_clusters` - dependencies for sample clustering
+
+All of them should be built from the main folder. 
+Second and third dockerfile depends on the first.
+This will create 3 docker images named `r_cluq, r_var_cl, r_sub_cl`.
+```
+sudo docker build -f Dock_R_clique -t r_cliq .   # for the package only
+sudo docker build -f Dock_R_clique -t r_var_cl .   # for variable clustering tests
+sudo docker build -f Dock_R_clique -t r_sub_cl .   # for subject clustering
+```
+
+Afterwards, running `docker run` will open up microenvironment in which it is possible to run all the tests.
+
+```
+sudo docker run -it -v .:/home/ismb_25 <IMAGE_NAME>
+```
+
+
+
+
+
