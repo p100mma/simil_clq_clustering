@@ -12,7 +12,11 @@ This respository corresponds to the manuscript submission for ISMB 2025:
 
 This file contains information on input data and implementation of our numerical experiments.
 
-Rendered PDFs of Rmd notebooks contain additional docummentation and some extended results (in particular, referenced table of XYZ).
+Rendered html of Rmd notebooks in `Rendered_docs` contain additional docummentation and some extended results. In particular:
+
+1. [SimNetClique](https://htmlpreview.github.io/[URLHERE](https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
+2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
+3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
 
