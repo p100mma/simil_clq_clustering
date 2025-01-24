@@ -167,18 +167,23 @@ The script will output 2 pdf files: `4clq_S.pdf`-- heatmap of CliqueSimNet and `
 #### Stability tests by bootstrap
 
 -`v2a_prepare_bootstrap_sets.R` - prepares indexes of samples for 100 repeats bootstrap testing. Outputs 2 lists of indexes corresponding to 2 different bootstrap set sizes: `v_bs_N.rds` (N=1394), `v_bs_200.rds` (N=200).
--`v2b_stability_resample.R <BS_sample_number>` - run batch of tests for all methods for resample number `<VS_sample_number>`. To complete all trials, this would have to be run 100 times with running argument: 
+
+-`v2b_stability_resample.R <BS_sample_number>` - run batch of tests for all methods for resample number `<BS_sample_number>`. To complete all trials, this would have to be run 100 times with running argument: 
 ```
 Rscript --no-save v2b_stability_resample.R 1
 Rscript --no-save v2b_stability_resample.R 2
 ...
-Rscript --no-save v2b_stability_resample.R 48
+Rscript --no-save v2b_stability_resample.R 100
 ```
 (we ran this in parallel on HPC cluster, setting minimal RAM requirements to 30 GB). Results are saved in subdirectories `B_200`, `B_1394`. Pattern for filename of outputs from SimNetClique is the same as in `v1b` script but contains `<BS_sample_number>` prefix, while output for WGCNA is named `<BS_sample_number>_WGCNA_labels.rds`.
+
 -`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of SimNetClique (see [REFERENCE] for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds`.
+
 -`v2e_summarise.R` produces plots:
-  - stability based on output of previous 2 scripts -- `v2e_stability.pdf`
-  - rest of plots in fig. 4 -- `v2e_modularity.pdf`, `v2e_pairwise_sim.pdf`
+
+   - stability based on output of previous 2 scripts -- `v2e_stability.pdf`
+ 
+   - rest of plots in fig. 4 -- `v2e_modularity.pdf`, `v2e_pairwise_sim.pdf`
 
 
 ### Sample clustering
