@@ -1,0 +1,195 @@
+---
+title: 'SimNetClique: algorithmic overview'
+author: "Piotr Stomma"
+date: "2025-01-24"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# What this file contains
+
+We discuss technical details of SimNetClique which are not obvious only from description of main steps of the algorithm and provide some illustratory examples, which might be helpful for understanding but are too detailed for the main description.
+
+## Purpose of the algorithm
+
+Algorithm is supposed to find clusters according to pairwise similarities between objects. 
+Name stands for CliqueSimNet -- clique based similarity network clustering and describes its main mechanism
+
+Input in form an undirected, weighted, unsigned similarity graph $G_{\mathbf{S}}$ is used to produce cluster assignments of its nodes based on weight/similarity matrix $\mathbf{S}$. 
+
+
+```{r}
+library(cliqueClusteR)
+```
+
+## Main steps
+
+1. Optimal thresholding and clique partitioning of $G_{\mathbf{S}}$.
+
+1. Construction of clique similarity network $G_{\mathbf{CS}}$. 
+
+1. Optimal clique relaxation according to topology of $G_{\mathbf{CS}}$ and weights of $G_{\mathbf{S}}$.
+
+### Ad.1 
+
+We described details of clique finiding in docummentation of `cliqueParitioneR` and main manuscript.
+To find optimal threshold by `compexity` of a clique partition, we subject $G_{\mathbf{S}}$ to candidate threshold $t$ and calculate complexity for cliques found on this $t$ (see docs of `cliquePartitioneR::thr_optimizer`.
+To maximize this function, we follow 2 step procedure, although user can select only one of the steps:
+
+1. Initial exhaustive search over `n_steps` evenly spaced points in the range of weights of matrix $\mathbf{S}$.
+
+1. Refined search in the intervals straddling the one from 1. (or on whole range of weights if 1. was omitted).
+
+As for now, refined search works by a combination of golden section search with parabolic interpolation. 
+
+Note the strong linear relationship between clique size and its mean weight for the BRCA dataset, which is the expected behaviour of the method:
+
+```{r clq_cor}
+readRDS("gene_expr_data.rds")->X
+source("cor_matmul.R")
+library(matrixStats)
+set.seed(124) #demo on random subsample of whole set 
+X<- X[, sample(1:ncol(X), 1000, replace=FALSE)]
+similarity_matrix(fastPearsonData(X))-> S
+thr_optimizer(S)-> optim
+diag(S)<-0
+Pa<- uniqueSingletonLabels(optim$maximizer_partition)
+do.call(rbind,lapply(unique(Pa), function(clq)
+  c( sum(Pa==clq), mean(S[Pa==clq,
+                         Pa==clq,
+                         drop=FALSE] %thr% optim$thr )   )))->XY
+plot(XY, xlab="clique size", ylab="mean corsq^2")
+```
+
+
+Other method for finding optimal threshold, `mst`, utilizes Maximum Spanning Tree of similarity graph. 
+Weights of the MST are sorted in the decreasing order and differences between subsequent pairs of weights in the sequence are calculated.
+Finally, $t_\mathbf{S}$ is chosen as the arithmetic mean of pair of weights for which the magnitude of difference was maximal.
+
+Sudden jump in the sorted sequence of weights suggests that the weights after the jump are those between the clusters, and arithmetic mean of the weights with highest difference lies between weight of edges inside the clusters and weights of edges between them.
+
+For this method, manual inspection of the found threshold is advised, because few really closely similar nodes but otherwise really dissimilar from the rest of the graph can skew the weight cutoff to a very extreme value.
+
+### Ad.2
+
+Clique similarities are computed using the optimal partition of data into the cliques from previous step and count only edges between different cliques.
+If `do_signif=TRUE`, we zero out some edges in clique similarity graph according to binomial test and Holm correction for $N(N-1)/2$ tests where $N$ is the number of cliques.
+Below plot is ordered by the clique label and show "degree" of each clique in clique similarity graphs: with and without null model.
+which is determined by the order in which it was built by our clique partitioning.
+
+```{r clq_sim}
+cliqueSimilarity(Pa,WorA = S %thr% optim$thr,do_signif = FALSE)-> CS
+cliqueSimilarity(Pa,WorA = S %thr% optim$thr,do_signif = TRUE)-> CS_0
+diag(CS)<-diag(CS_0)<-0
+#par(mfrow=c(2,1))
+{#options(warn=FALSE)
+  plot(colSums(CS), type="l", xlab="degree of each clique",
+       ylab="")
+lines(colSums(CS_0), col="red")
+legend("topright", col=c("black","red"),lwd=2, legend = c("CS", "CS null model"))
+}
+```
+
+Another plot compares degree with clique size:
+
+```{r clq_sim_size}
+unlist(lapply(1:ncol(CS),
+               function(clq) sum(Pa==clq)))-> sizes_label_ordered
+
+{#options(warn=FALSE)
+  plot( sizes_label_ordered,
+               colSums(CS), type="p", xlab="degree of each clique",
+       ylab="",pch=16)
+points(sizes_label_ordered,colSums(CS_0), col="red",pch=16)
+legend("topright", col=c("black","red"),pch=16, legend = c("CS", "CS null model"))
+}
+```
+
+
+We see that both number of connections each clique has with the rest and its mean weight are correlated with its size, and that first cliques found by greedy clique partitioning have the highest number of external connections.
+Thus the first cliques found are most likely the biggest ones, have biggest number of external connections and biggest mean weight.
+
+### Ad.3
+
+Clique similarity matrix under some threshold $t$ is used to find the clusters, either by considering its separate connected components or by a greedy clustering procedure.
+
+We focus on the second strategy here: we list the exact steps and by using examples shown above, we motivate its steps.
+
+1. Initialization: starting from the most important clique, attach every clique connected to it according to $G_{[\mathbf{CS},t]}$.
+Repeat until all cliques are assigned to some clusters.
+2. Swapping: for every clique $l$ inside cluster consisting of at least 2 cliques, compute the "attractor" cluster: $Cl_K$ maximizing $\sum_{j \in Cl_K}[\mathbf{CS},t]_{lj}$. 
+Afterwards, consider swaps of cliques in which its attractor is not its current cluster (condition I). 
+For every such clique $l$:
+    -  compute $[i/o]_F, [i/o]_G$ where cluster of $l$ is $Cl_F$ and its attractor is $Cl_G$
+    -  compute hypothetical values of $[i/o]$ after the swap of clique $l$ from $Cl_G$ to $Cl_F$: $[i/o]^h_G$, $[i/o]^h_F$.
+    - if $[i/o]^h_J>[i/o]_J$ for both $J=F,G$, mark clique $l$ "swappable".
+At this point, swap is done for swappable clique $k$ which maximizes its score $\sum_{J \in {F,G}}([i/o]^H_J - [i/o]_J)$ ($F$-- old cluster of $k$, $G$-- new cluster of $k$).
+Swapping is repeated  until there are no cliques left satisfying condition I or are swappable.
+3. Merging: Consider only clusters composed of 2 or more cliques and compute values of cluster-to-cluster pulls by summing over similarities of cliques in $Cl_I$ to cliques in $Cl_J$:
+$$
+\mathbf{CP}_{IJ}:= \sum_{Clq_i \in Cl_I, Clq_j \in Cl_J} [\mathbf{CS},t]_{ij} 
+$$
+(note this is also meaningful if $I=J$).
+Find clusters $L$ for which there is some attractor cluster $Cl_A, A \neq L$ satisfying $\mathbf{CP}_{AL} > \mathbf{CP}_{LL}$ (condition II).
+For every such cluster $Cl_L$:
+    - compute $[i/o]_L,[i/o]_A$, where $Cl_A$ is attractor of $L$,
+    - compute $[i/o]^h_A$ which is hypothetical score of cluster $A$ after the merge,
+    - mark $L$ as "mergable" if $[i/o]^h_A> \frac{1}{2}\left([i/o]_L + [i/o]_A\right)$.
+Similarly as before, merge is done for cluster $K$ maximizing the score $[i/o]^h_A     -\frac{1}{2}\left([i/o]_K + [i/o]_A\right)$ ($Cl_A$ -- attractor of $K$) and merging is repeated until no clusters satisfy condition II or are "mergable".
+4. Core and interior finding: For each cluster $Cl_I$, mark as a core the clique $i$ that was first used in 1 and its size exceeds $minCoreSize$.
+ Mark rest of in-cluster cliques as interior.
+
+For clique importance we consider its size, due to observed clique connectivity correlations (see previous plots)
+Reason for considering only clusters made of at least 2 cliques in steps 2-3 is that the quantity $[i/o]$ is not defined for 1 element clusters (this might need further tuning).
+
+One might also notice that in computing the values of the "pulling" cluster in steps 2-3, the sums over weights of edges in $\mathbf{CS}$ are not normalized.
+This is because we want to exploit the correlations between clique size, mean weight and its degree in $\mathbf{CS}$.
+By summing over unnormalized values of $\mathbf{CS}$ we give more priority to the clusters containing more important (bigger) cliques.
+
+Finally, again by previously observed correlations,  we set a fixed threshold on what could be considered a proper core. 
+Right now, default value of $minCoreSize$ is fixed at 100 due to empirical results on gene coexpression networks, where we find this distinction most useful. 
+Here, we think that the plots based on $\mathbf{CS}$ could be useful to determine the threshold criterion.
+
+#### Ad 3.1 (threshold on clique similarity)
+
+Finally, we discuss how we pick threshold cutoff on $\mathbf{CS}$.
+We again use the 2-step search procedure explained in Ad.1 but we measure score of cluster partition on original similarity graph $G_{\mathbf{S}}$.
+`modularity` score due to its popularity does not need further discussion. 
+
+We focus on the `MSTDunn` quality function (defined in terms of distances) suited for problems where non-oblique clusters are meaningful:
+
+The precise equation to maximize is given by
+
+$$
+ MSTDunn(G_\mathbf{D},P_C):= \frac{\min_{I,J} d(Cl_I, Cl_J)  }{ \max_I \max_{v,u \in Cl_I} MinMaxD_{Cl_I}(u,v) }
+$$
+
+where $MinMaxD_{Cl_I}(u,v)$ is the max weight of the edge of the path in MST of $Cl_I$ joining $u,v$.
+$d(Cl_I,Cl_J)$ can be given by single linkage, but we  recommend using a variant of the numerator
+constructed in analogy to Hausdorff metric:
+
+
+
+$$
+\max \left[  \max_{u \in Cl_I} d(u, Cl_J), \max_{v \in C_J} d(v,C_J) \right] 
+$$
+
+
+where $d(u,Cl_I)$ is the minimal distance from $u$ to any element of $Cl_I$.
+Implementation includes a custom quantile in place of inner $\max$, which can further alleviate sensitivity to outliers.
+To calculate its value on similarity matrix, we have to convert it to distances:
+
+```{r}
+library(magrittr)
+
+#print(MinST_DunnIndex(partition= Pa,dS=S %>% flip_(), dX.Y = "hausdorff",
+#                hausdorff_q =1)) #default value is max 
+                
+print(MinST_DunnIndex(partition= Pa,dS=S %>% flip_(), dX.Y = "hausdorff",
+                hausdorff_q =0.75)) #default value is 1            
+```
