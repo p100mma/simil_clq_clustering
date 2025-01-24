@@ -1,7 +1,6 @@
 ---
 title: 'SimNetClique: algorithmic overview'
 author: "Piotr Stomma"
-date: "2025-01-24"
 output:
   html_document:
     df_print: paged
@@ -18,7 +17,7 @@ We discuss technical details of SimNetClique which are not obvious only from des
 ## Purpose of the algorithm
 
 Algorithm is supposed to find clusters according to pairwise similarities between objects. 
-Name stands for CliqueSimNet -- clique based similarity network clustering and describes its main mechanism
+Name stands for similarity network clique based clustering and describes its main mechanism.
 
 Input in form an undirected, weighted, unsigned similarity graph $G_{\mathbf{S}}$ is used to produce cluster assignments of its nodes based on weight/similarity matrix $\mathbf{S}$. 
 
@@ -38,7 +37,7 @@ library(cliqueClusteR)
 ### Ad.1 
 
 We described details of clique finiding in docummentation of `cliqueParitioneR` and main manuscript.
-To find optimal threshold by `compexity` of a clique partition, we subject $G_{\mathbf{S}}$ to candidate threshold $t$ and calculate complexity for cliques found on this $t$ (see docs of `cliquePartitioneR::thr_optimizer`.
+To find optimal threshold by `compexity` of a clique partition, we subject $G_{\mathbf{S}}$ to candidate threshold $t$ and calculate complexity for cliques found on this $t$ (see docs of `cliqueClusteR::thr_optimizer`).
 To maximize this function, we follow 2 step procedure, although user can select only one of the steps:
 
 1. Initial exhaustive search over `n_steps` evenly spaced points in the range of weights of matrix $\mathbf{S}$.
@@ -50,12 +49,12 @@ As for now, refined search works by a combination of golden section search with 
 Note the strong linear relationship between clique size and its mean weight for the BRCA dataset, which is the expected behaviour of the method:
 
 ```{r clq_cor}
-readRDS("gene_expr_data.rds")->X
-source("cor_matmul.R")
+readRDS("../gene_expr_data.rds")->X
+source("../cor_matmul.R") # fast corr. computation
 library(matrixStats)
 set.seed(124) #demo on random subsample of whole set 
 X<- X[, sample(1:ncol(X), 1000, replace=FALSE)]
-similarity_matrix(fastPearsonData(X))-> S
+similarity_matrix(fastPearsonData(X))-> S  #cor^2 network with p-value correction
 thr_optimizer(S)-> optim
 diag(S)<-0
 Pa<- uniqueSingletonLabels(optim$maximizer_partition)
@@ -79,8 +78,9 @@ For this method, manual inspection of the found threshold is advised, because fe
 
 Clique similarities are computed using the optimal partition of data into the cliques from previous step and count only edges between different cliques.
 If `do_signif=TRUE`, we zero out some edges in clique similarity graph according to binomial test and Holm correction for $N(N-1)/2$ tests where $N$ is the number of cliques.
-Below plot is ordered by the clique label and show "degree" of each clique in clique similarity graphs: with and without null model.
-which is determined by the order in which it was built by our clique partitioning.
+Below plot is ordered by the clique label and Y axis shows weighted degree of each clique in clique similarity graphs: with and without null model.
+Clique label is determined by the order in which it was built by our clique partitioning.
+
 
 ```{r clq_sim}
 cliqueSimilarity(Pa,WorA = S %thr% optim$thr,do_signif = FALSE)-> CS
@@ -88,8 +88,8 @@ cliqueSimilarity(Pa,WorA = S %thr% optim$thr,do_signif = TRUE)-> CS_0
 diag(CS)<-diag(CS_0)<-0
 #par(mfrow=c(2,1))
 {#options(warn=FALSE)
-  plot(colSums(CS), type="l", xlab="degree of each clique",
-       ylab="")
+  plot(colSums(CS), type="l", xlab="bulilding order",
+       ylab="degree of each clique")
 lines(colSums(CS_0), col="red")
 legend("topright", col=c("black","red"),lwd=2, legend = c("CS", "CS null model"))
 }
@@ -103,8 +103,8 @@ unlist(lapply(1:ncol(CS),
 
 {#options(warn=FALSE)
   plot( sizes_label_ordered,
-               colSums(CS), type="p", xlab="degree of each clique",
-       ylab="",pch=16)
+               colSums(CS), type="p", ylab="degree of each clique",
+       xlab="clique size",pch=16)
 points(sizes_label_ordered,colSums(CS_0), col="red",pch=16)
 legend("topright", col=c("black","red"),pch=16, legend = c("CS", "CS null model"))
 }
@@ -112,13 +112,20 @@ legend("topright", col=c("black","red"),pch=16, legend = c("CS", "CS null model"
 
 
 We see that both number of connections each clique has with the rest and its mean weight are correlated with its size, and that first cliques found by greedy clique partitioning have the highest number of external connections.
-Thus the first cliques found are most likely the biggest ones, have biggest number of external connections and biggest mean weight.
+Thus, the first cliques found are most likely the biggest ones, have biggest number of external connections and biggest mean weight.
 
 ### Ad.3
 
 Clique similarity matrix under some threshold $t$ is used to find the clusters, either by considering its separate connected components or by a greedy clustering procedure.
 
 We focus on the second strategy here: we list the exact steps and by using examples shown above, we motivate its steps.
+
+Algorithm optimizes ratio of (mean) inner degree to (mean) outer degree of each clique cluster $K$, according to $G_{\mathbf{CS}}$:
+
+$$
+[i/o]_K:= \left( \sum_{Clq_i \in K} \sum_{Clq_j \in K} CS_{ij} \right) / \left( \sum_{Clq_i \in K} \sum_{Clq_j \notin K} CS_{ij}   \right)
+$$
+
 
 1. Initialization: starting from the most important clique, attach every clique connected to it according to $G_{[\mathbf{CS},t]}$.
 Repeat until all cliques are assigned to some clusters.
@@ -161,7 +168,7 @@ Finally, we discuss how we pick threshold cutoff on $\mathbf{CS}$.
 We again use the 2-step search procedure explained in Ad.1 but we measure score of cluster partition on original similarity graph $G_{\mathbf{S}}$.
 `modularity` score due to its popularity does not need further discussion. 
 
-We focus on the `MSTDunn` quality function (defined in terms of distances) suited for problems where non-oblique clusters are meaningful:
+We focus on the `MSTDunn` quality function (defined in terms of distances, so now MST stands for *Minimum* Spanning Tree) suited for problems where non-oblique clusters are meaningful:
 
 The precise equation to maximize is given by
 
@@ -187,8 +194,6 @@ To calculate its value on similarity matrix, we have to convert it to distances:
 ```{r}
 library(magrittr)
 
-#print(MinST_DunnIndex(partition= Pa,dS=S %>% flip_(), dX.Y = "hausdorff",
-#                hausdorff_q =1)) #default value is max 
                 
 print(MinST_DunnIndex(partition= Pa,dS=S %>% flip_(), dX.Y = "hausdorff",
                 hausdorff_q =0.75)) #default value is 1            
