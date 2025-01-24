@@ -40,8 +40,8 @@ References:
 ## Uses:
 
 implementation of CliqueSimNet is shared in form of 2 R packages (in development):
-- [cliqueClusteR]((https://github.com/p100mma/cliqueClusteR))
-- [cliquePartitoneR]((https://github.com/p100mma/cliquePartitioneR))
+- [cliqueClusteR](https://github.com/p100mma/cliqueClusteR)
+- [cliquePartitoneR(https://github.com/p100mma/cliquePartitioneR)
 
 
 How tp run using docker
