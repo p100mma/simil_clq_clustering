@@ -146,11 +146,11 @@ clusters_t_S=<t_S CHOICE VARIANT>;t_CS=<OBJECTIVE FUNCTION>;mode=<CLIQUE EXPANSI
 ```
 each one containing results per each variant.
 - `v1c_initial_summary.R` - aggregates results over all combinations tested in `v1b_`, outputs `devel_method_runtime_df.rds`, `devel_method_similarity.rds`, `devel_label_vecs.rds`.
-- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds`. See [REFERENCE] `.Rmd` file for visualization of results (contains the same code with textual description).
+- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds` (listing of parameters of variants to test further) and `clq_reference_modules.rds` (corresponding already computed cluster labels in `v1b`. ) . See [REFERENCE] `.Rmd` file for visualization of results (contains the same code with textual description).
 
 #### initial WGCNA modules and heatmap comparison
 
-- `v1e_WGCNA.R` - computes clusters for 3 different `minSize` parameters.
+- `v1e_WGCNA.R` - computes clusters for 3 different `minSize` parameters, saves results in `WGCNA_labels_fulldata.rds`.
 - `v1f_heatmaps.R <clq_nr> <hmap_size` - produces gene module heatmap of size `<hmap_size>` visualization for 1 of 6 variants of SimNetClique  tested in article given by `<clq_nr>` argument (and for WGCNA `minSize=30` ). To get the heatmaps from the article, assuming all previous steps have been completed:
 ```
 Rscript --no-save v1f_heatmaps.R 4 500
@@ -158,5 +158,3 @@ Rscript --no-save v1f_heatmaps.R 4 500
 The script will output 2 pdf files: `4clq_S.pdf`-- heatmap of CliqueSimNet and `1_WGCNAS.pdf` -- of WGCNA.
 
 #### Stability tests by bootstrap
-
-- `
