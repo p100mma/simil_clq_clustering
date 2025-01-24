@@ -8,6 +8,11 @@ This respository corresponds to the manuscript submission for ISMB 2025:
  1. Faculty of Computer Science, University of Bialystok
  2. Computational Centre, University of Białystok
 
+# Structure of the repository
+
+
+
+
 ## Data information
 
 ### Variable clustering test
@@ -37,12 +42,12 @@ References:
 
 # Implementation details
 
-## Uses:
+implementation of CliqueSimNet is shared in form of 2 R packages which are included also in this repository for reproduciblity reasons:
 
-implementation of CliqueSimNet is shared in form of 2 R packages (in development):
 - [cliqueClusteR](https://github.com/p100mma/cliqueClusteR)
 - [cliquePartitoneR](https://github.com/p100mma/cliquePartitioneR)
-
+- 
+Installation of each package and its usage is docummented in respective repositories. This repository contains only instructions on how to reproduce our experimental results and additional information about methods. 
 
 How tp run using docker
   
