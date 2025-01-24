@@ -10,6 +10,8 @@ This respository corresponds to the manuscript submission for ISMB 2025:
 
 # Structure of the repository
 
+This file contains information on input data and implementation of our numerical experiments.
+
 
 
 
