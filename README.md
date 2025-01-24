@@ -35,5 +35,14 @@ References:
 
 1. Kohlmann A, Kipps TJ, Rassenti LZ, Downing JR, Shurtleff SA, Mills KI, Gilkes AF, Hofmann WK, Basso G, Dell'orto MC, Foà R, Chiaretti S, De Vos J, Rauhut S, Papenhausen PR, Hernández JM, Lumbreras E, Yeoh AE, Koay ES, Li R, Liu WM, Williams PM, Wieczorek L, Haferlach T. An international standardization programme towards the application of gene expression profiling in routine leukaemia diagnostics: the Microarray Innovations in LEukemia study prephase. Br J Haematol. 2008 Sep;142(5):802-7. doi: 10.1111/j.1365-2141.2008.07261.x. PMID: 18573112; PMCID: PMC2654477.
 
+# Implementation details
 
+## Uses:
+
+implementation of CliqueSimNet is shared in form of 2 R packages (in development):
+- [cliqueClusteR]((https://github.com/p100mma/cliqueClusteR))
+- [cliquePartitoneR]((https://github.com/p100mma/cliquePartitioneR))
+
+
+How tp run using docker
   
