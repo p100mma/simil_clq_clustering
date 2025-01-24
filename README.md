@@ -51,5 +51,5 @@ implementation of CliqueSimNet is shared in form of 2 R packages which are inclu
 - 
 Installation of each package and its usage is docummented in respective repositories. This repository contains only instructions on how to reproduce our experimental results and additional information about methods. 
 
-How tp run using docker
+# How tp run using docker
   
