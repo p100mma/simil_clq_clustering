@@ -82,6 +82,8 @@ There are 3 dockerfiles:
 - `Dock_var_clusters` - dependencies for variable clustering
 - `Dock_subject_clusters` - dependencies for sample clustering
 
+Contents and package versions contained there are listed at the end of this file.
+
 All of them should be built from the main folder. 
 Second and third dockerfile depends on the first.
 This will create 3 docker images named `r_cluq, r_var_cl, r_sub_cl`.
@@ -97,7 +99,20 @@ Afterwards, running `docker run` will open up microenvironment in which it is po
 sudo docker run -it -v .:/home/ismb_25 <IMAGE_NAME>
 ```
 
+Note that for practical reasons (memory limiatations and parallelism of resampling tests), we have run all of the tests
+using our computational cluster and [singularity](https://github.com/sylabs/singularity).
+One can convert docker images to singularity ones by [docker2singularity](https://github.com/singularityhub/docker2singularity) tool.
+We list example commands to convert one of our docker images to singularity below  (creates file in `/tmp/test/` directory):
 
+```
+sudo docker run -v /var/run/docker.sock:/var/run/docker.sock \
+-v /tmp/test:/output --privileged -t \
+ --rm quay.io/singularity/docker2singularity r_sub_cl
+```
+
+## Running the computational tests
+
+### Variable clustering
 
 
 
