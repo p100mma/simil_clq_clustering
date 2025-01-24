@@ -1,0 +1,13 @@
+FROM r_cliq
+
+RUN apt-get update && apt-get install -y libglu1-mesa
+
+RUN install2.r --error --skipinstalled --ncpus -1 \
+    FCPS \
+    apcluster \
+    dbscan \
+    umap 	
+
+
+WORKDIR /home/ismb_25
+CMD ["/bin/bash"]

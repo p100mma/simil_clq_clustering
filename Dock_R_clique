@@ -1,0 +1,28 @@
+FROM rocker/r-ver:4.4.0
+
+RUN mkdir /home/ismb_25
+RUN mkdir /home/ismb_25/cliquePartitioneR
+RUN mkdir /home/ismb_25/cliqueClusteR
+RUN apt-get update && apt-get install -y libglpk40 #igraph dependency...
+# RUN apt-get install libcurl4-openssl-dev -y
+# RUN apt-get install libxml2-dev -y
+# RUN apt-get install libfontconfig1-dev -y
+# RUN apt-get install libharfbuzz-dev libfribidi-dev -y
+
+
+WORKDIR /home/ismb_25
+
+COPY cliquePartitioneR /home/ismb_25/cliquePartitioneR
+COPY cliqueClusteR /home/ismb_25/cliqueClusteR
+ 
+RUN install2.r --error --skipinstalled --ncpus -1 \
+    magrittr \
+    igraph \
+    Rcpp \
+    devtools 
+
+
+Run Rscript -e "devtools::install('/home/ismb_25/cliquePartitioneR')"
+Run Rscript -e "devtools::install('/home/ismb_25/cliqueClusteR')"
+
+CMD ["/bin/bash"]

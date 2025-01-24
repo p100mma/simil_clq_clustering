@@ -1,0 +1,22 @@
+FROM r_cliq
+RUN apt-get update && apt-get install -y libz-dev
+
+RUN install2.r --error --skipinstalled --ncpus -1 \
+    matrixStats \
+    Hmisc \
+    splines \
+    foreach \
+    doParallel \
+    fastcluster \
+    dynamicTreeCut \
+    survival \
+    BiocManager
+
+Run Rscript -e "BiocManager::install('Biobase');"
+Run Rscript -e "BiocManager::install('GO.db');"
+Run Rscript -e "BiocManager::install('preprocessCore');"
+Run Rscript -e "BiocManager::install('impute');"
+Run Rscript -e "BiocManager::install('WGCNA');"
+
+WORKDIR /home/ismb_25
+CMD ["/bin/bash"]
