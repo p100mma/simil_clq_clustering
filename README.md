@@ -148,7 +148,7 @@ Afterwards, run each script in the following order (all subsections) to get all 
 #### Initial run on whole dataset
 
 - `v1a_similarity_graph.R` -- computes initial correlation network for testing different variants of CliqueSimNet, outputs `BRCA_similarity_graph.rds`.
-- `v1b_initial_algo_test.R` -- run with integer argument ranging from 1 to 48 to test combinations listed in [REFERENCE]. We ran this part in parallel on computational cluster setting min. memory requirements to 30 GB.
+- `v1b_initial_algo_test.R` -- run with integer argument ranging from 1 to 48 to test combinations listed in [here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html). We ran this part in parallel on computational cluster setting min. memory requirements to 30 GB.
 ```
 Rscript --no-save v1b_initial_algo_test.R 1
 Rscript --no-save v1b_initial_algo_test.R 2
