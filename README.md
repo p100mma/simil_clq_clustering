@@ -15,7 +15,7 @@ This file contains information on input data and implementation of our numerical
 Rendered html of Rmd notebooks in `docs` contain additional docummentation and some extended results. In particular:
 
 1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
-2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
+2. [BRCA_initial_selection](https://htmlpreview.github.io/https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
@@ -157,7 +157,7 @@ clusters_t_S=<t_S CHOICE VARIANT>;t_CS=<OBJECTIVE FUNCTION>;mode=<CLIQUE EXPANSI
 ```
 each one containing results per each variant. 
 - `v1c_initial_summary.R` - aggregates results over all combinations tested in `v1b_`, outputs `devel_method_runtime_df.rds`, `devel_method_similarity.rds`, `devel_label_vecs.rds`.
-- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds` (listing of parameters of variants to test further) and `clq_reference_modules.rds` (corresponding already computed cluster labels in `v1b`. ) . See [REFERENCE] `.Rmd` file for visualization of results (contains the same code with textual description).
+- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds` (listing of parameters of variants to test further) and `clq_reference_modules.rds` (corresponding already computed cluster labels in `v1b`. ) . See [here][https://htmlpreview.github.io/https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html]  for visualization of results (contains the same code with textual description).
 
 #### initial WGCNA modules and heatmap comparison
 
