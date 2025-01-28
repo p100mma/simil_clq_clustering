@@ -181,7 +181,7 @@ Rscript --no-save v2b_stability_resample.R 100
 ```
 (we ran this in parallel on HPC cluster, setting minimal RAM requirements to 30 GB). Results are saved in subdirectories `B_200`, `B_1394`. Pattern for filename of outputs from SimNetClique is the same as in `v1b` script but contains `<BS_sample_number>` prefix, while output for WGCNA is named `<BS_sample_number>_WGCNA_labels.rds`.
 
--`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of SimNetClique ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds`.
+-`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of SimNetClique ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds` and `v2d_2346_cores.rds` (last file is list of core membership vectors for all of the variants presented in the article computed on original data, for reference).
 
 -`v2e_summarise.R` produces plots:
 
