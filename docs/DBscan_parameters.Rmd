@@ -1,0 +1,93 @@
+---
+title: "DB_can_parameters"
+author: "Piotr Stomma"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# What this file contains 
+
+Illustration of our criteria for paramteter estimation of DB-scan by the "elbow" method.
+
+## Leuk_18
+
+Recall the workflow used here utilizes dimensionality reduction by 3D-UMAP.
+
+We tested all variants of data sizes in terms of numbers of highly variable genes used that are listed below (article contains selection (500,1000,2000,5000, 10000,20000) due to provided constraints on the space we can utilize).
+
+Method for estimation of the `eps` parameter seeks an "elbow point" according to the plot of sorted kNN distances of each point, where $k=2l -1$ where $l$ is the dimension of the space in which we do clustering (`2*3 - 1`).
+Scripts in this repository starting with `s1` prefix compute the distances and show them in common axes on a plot in a pdf file, which reveals that we can reasonably use the same criterion for any of the gene numbers used, for illustration purposes.
+Here we show the case for `n_genes=2000`:
+
+```{r vc}
+variance_cutoffs=c(100,500,1000,
+                   2000,3500, 5000,
+                 7500, 10000, 12500,
+                 15000, 15750, 20000 ) +1   # 12
+```
+
+```{r knn}
+library(umap)
+library(dbscan)
+library(magrittr)
+load("../trainLeukemia.RData")
+train$class->ref #reference clusters
+X<- train[,-c(1,2, ncol(train))] %>% as.matrix()
+apply(X,2,var)-> v_x
+4-> n_vc #2000 genes
+vc<- variance_cutoffs[[n_vc]]
+X<- X[, v_x> sort(v_x, decreasing = TRUE)[vc] ]
+# UMAP embedding
+set.seed(n_vc)
+sample.int(23523)-> umap_seed
+set.seed(umap_seed)
+t0<- Sys.time()
+UM<- umap(X, n_components=3, n_neighbors=45)$layout # ~ sqrt(nrow(X))
+execution_time= Sys.time() - t0
+attr(UM, "execution_time")<- execution_time
+
+# kNNdist plot
+sort(kNNdist(UM,k=2*ncol(UM)-1))-> kNN_curve
+{plot(kNN_curve, main="kNN distances, UMAP embedding of samples using 2000 genes")
+abline(h=0.3)}
+
+```
+
+Above plot suggests setting the value of `eps` for 0.3.
+
+### Visual inspection of the embedding
+
+Below plot shows the reference clusters labels in the resulting space. 
+We see that some of the clusters are heavily mixed, making the problem difficult for most methods.
+
+```{r}
+plot(as.data.frame(UM), col=ref, pch=16)
+```
+
+
+## FCPS suite 
+
+We show kNN dist plots for the benchmark datasets from FCPS suite and values of `eps` used of each case. Note the ambiguous situation for the `Tetra` dataset.
+
+```{r}
+library(FCPS)
+sets2test<- c("Atom", "Chainlink", "Tetra", "Target", "TwoDiamonds")
+db_eps<- c(4,0.11,0.5,0.4,0.11)
+names(db_eps)<-sets2test
+db_scores<-vector()
+for (set in sets2test)
+{
+  db_input<- get(set)$Data
+  ref<-get(set)$Cls
+ knn_curve<-sort(kNNdist(db_input, k = 2*ncol(db_input) - 1))
+ {par(mfrow=c(1,2))
+   plot(db_input, col=ref,pch=16, main=set)
+ plot(knn_curve,main=sprintf("%s kNN curve",set))
+ }
+ abline(h=db_eps[[set]])
+}
+```
+

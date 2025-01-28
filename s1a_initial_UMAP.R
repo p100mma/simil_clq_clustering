@@ -25,5 +25,4 @@ execution_time= Sys.time() - t0
 attr(UM, "execution_time")<- execution_time
 saveRDS(UM,sprintf("leuk_UM/n_genes=%d_UMkD.rds",n_vc))
 
-UM2D<-umap(X,n_components=2, n_neighbors=45)$layout
 
