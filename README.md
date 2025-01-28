@@ -62,7 +62,7 @@ implementation of CliqueSimNet is shared in form of 2 R packages which are held 
 - [cliqueClusteR](https://github.com/p100mma/cliqueClusteR)
 - [cliquePartitoneR](https://github.com/p100mma/cliquePartitioneR)
 
-Installation of each package and its usage is docummented in respective repositories. This repository contains only instructions on how to reproduce our experimental results and additional information about methods. 
+Installation of each package and its usage (usage for general purposes) is docummented in respective repositories. This repository contains only instructions on how to reproduce our experimental results and additional information about methods. 
 
 # How to run our code
 
