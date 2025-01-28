@@ -12,7 +12,7 @@
 <meta name="author" content="Piotr Stomma" />
 
 
-<title>DB_can_parameters</title>
+<title>DBscan_parameters</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,7 +349,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">DB_can_parameters</h1>
+<h1 class="title toc-ignore">DBscan_parameters</h1>
 <h4 class="author">Piotr Stomma</h4>
 
 </div>
@@ -380,18 +380,10 @@ illustration purposes. Here we show the case for
                    2000,3500, 5000,
                  7500, 10000, 12500,
                  15000, 15750, 20000 ) +1   # 12</code></pre>
-<pre class="r"><code>library(umap)</code></pre>
-<pre><code>## Warning: pakiet &#39;umap&#39; został zbudowany w wersji R 4.4.2</code></pre>
-<pre class="r"><code>library(dbscan)</code></pre>
-<pre><code>## Warning: pakiet &#39;dbscan&#39; został zbudowany w wersji R 4.4.2</code></pre>
-<pre><code>## 
-## Dołączanie pakietu: &#39;dbscan&#39;</code></pre>
-<pre><code>## Następujący obiekt został zakryty z &#39;package:stats&#39;:
-## 
-##     as.dendrogram</code></pre>
-<pre class="r"><code>library(magrittr)</code></pre>
-<pre><code>## Warning: pakiet &#39;magrittr&#39; został zbudowany w wersji R 4.4.1</code></pre>
-<pre class="r"><code>load(&quot;../trainLeukemia.RData&quot;)
+<pre class="r"><code>library(umap)
+library(dbscan)
+library(magrittr)
+load(&quot;../trainLeukemia.RData&quot;)
 train$class-&gt;ref #reference clusters
 X&lt;- train[,-c(1,2, ncol(train))] %&gt;% as.matrix()
 apply(X,2,var)-&gt; v_x
@@ -428,9 +420,10 @@ problem difficult for most methods.</p>
 <p>We show kNN dist plots for the benchmark datasets from FCPS suite and
 values of <code>eps</code> used of each case. Note the ambiguous
 situation for the <code>Tetra</code> dataset.</p>
-<pre class="r"><code>library(FCPS)</code></pre>
-<pre><code>## Warning: pakiet &#39;FCPS&#39; został zbudowany w wersji R 4.4.1</code></pre>
-<pre class="r"><code>sets2test&lt;- c(&quot;Atom&quot;, &quot;Chainlink&quot;, &quot;Tetra&quot;, &quot;Target&quot;, &quot;TwoDiamonds&quot;)
+<pre class="r"><code>suppressWarnings({
+library(FCPS)
+})
+sets2test&lt;- c(&quot;Atom&quot;, &quot;Chainlink&quot;, &quot;Tetra&quot;, &quot;Target&quot;, &quot;TwoDiamonds&quot;)
 db_eps&lt;- c(4,0.11,0.5,0.4,0.11)
 names(db_eps)&lt;-sets2test
 db_scores&lt;-vector()

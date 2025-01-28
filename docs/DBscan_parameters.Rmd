@@ -1,5 +1,5 @@
 ---
-title: "DB_can_parameters"
+title: "DBscan_parameters"
 author: "Piotr Stomma"
 output: html_document
 ---
@@ -29,7 +29,7 @@ variance_cutoffs=c(100,500,1000,
                  15000, 15750, 20000 ) +1   # 12
 ```
 
-```{r knn}
+```{r knn, warning=FALSE, message=FALSE}
 library(umap)
 library(dbscan)
 library(magrittr)
@@ -73,7 +73,9 @@ plot(as.data.frame(UM), col=ref, pch=16)
 We show kNN dist plots for the benchmark datasets from FCPS suite and values of `eps` used of each case. Note the ambiguous situation for the `Tetra` dataset.
 
 ```{r}
+suppressWarnings({
 library(FCPS)
+})
 sets2test<- c("Atom", "Chainlink", "Tetra", "Target", "TwoDiamonds")
 db_eps<- c(4,0.11,0.5,0.4,0.11)
 names(db_eps)<-sets2test

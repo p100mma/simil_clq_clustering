@@ -16,7 +16,7 @@ Considering different objective functions, thresholding and clique relaxation st
 
 - 2 initial thresholding strategies of $\mathbf{S}$: `complexity` vs. by `mst`
 - 2 objective functions for finding thr. on clique similarity: `modularity` and `MSTDunn` index.
-- 6 clique expansion methods: `basic`, `average`, `maxW`, `outW`, `outN` and additionally, here named `custom` one (based on coloring of the complement graph of $G_{\mathbf{S}}$ and referred to as `unW` in the main manuscript.
+- 6 clique expansion methods: `basic`, `average`, `maxW`, `outW`, `outN` and additionally, here named `custom` (based on coloring of the complement graph of $G_{\mathbf{S}}$ and referred to as `unW` in the main manuscript)
 - 2 clique expansion methods: `greedyCliqueJoin` and `components`,
 
 Below code constructs a `data.frame` with all of the combinations listed. Row number gives the combination identifier number. In the end we tested 6 most viable combinations from the list below:
@@ -32,9 +32,9 @@ cbind(ID=1:nrow(param_df) ,param_df)
 
 ### Exclusion of 'mst` variant for initial similarity threshold search
 
-Initial analysis relvealed that `mst` method for similarity thr. search, as it stands, is not suitable for the problem as few, highly correlated genes in the network (but otherwise mildly correlated with the rest) skew the found threshold to a too extreme value:
+Initial analysis revealed that `mst` method for similarity thr. search, as it stands, is not suitable for the problem as few, highly correlated genes in the network (but otherwise mildly correlated with the rest) skew the found threshold to a too extreme value:
 
-```{r t_S}
+```{r t_S, warning=FALSE, message=FALSE}
 # load the BRCA dataset
 readRDS("../gene_expr_data.rds")->X 
 # faster correlation computation (if OpenBLAS matrix mul backend is used):
@@ -63,7 +63,6 @@ For further analysis we focused on the remaining variants that produced most bal
 ```{r }
 #load precomputed cluster membership vectors, ARI similarities and combination
 # data frame
-library(magrittr)
 lv<-readRDS("../devel_label_vecs.rds")
 sm<-readRDS("../devel_method_similarity.rds")
 df<-readRDS("../devel_method_runtime_df.rds")
@@ -82,8 +81,8 @@ abline(h=8676)}
 
 
 Horizontal line at around 8600 shows the size of the dataset.
-We see that several methods basically put everything into one big component.
-We see that discounting those other extreme ones, almost all remaining variants are based on maximizing modularity and finding threshold on similarity by complexity method and differ mostly by `expansion_mode` (clique building strategy) and `relax_method` (clique joining method).
+We see that apart from extreme cases of `mst` method on the right,  several methods basically put everything into one big component.
+Discounting those other extreme ones, almost all remaining variants are based on maximizing modularity and finding threshold on similarity by complexity method and differ mostly by `expansion_mode` (clique building strategy) and `relax_method` (clique joining method).
 
 ```{r}
 viable_methods<-cbind(max_cl_size=unname(max_cl), df[sm_order,])
@@ -94,7 +93,7 @@ viable_methods[,1:5]
 ```
 ### Representative variant selection from the rest
 
-For the rest of the variants, we selected 6 most representative of the rest by considering pairwise similarities between clusterings measured by Adjusted Rand Index.
+For the rest of the variants, we selected 6 most representative of the rest by considering pairwise similarities between clusterings measured by Adjusted Rand Index (ARI).
 Below code replaces names of the variants with shorter names, for the purposes of visualization.
 
 ```{r}
@@ -133,25 +132,25 @@ Codes of the names are as follows:
 
 - 3rd part: clique expansion strategy:
 
-  - `basic` (`b`), `average`(`a`), `maxW`(`m`),`outW` (`ow`), `outN` (`on`), `custom` (`c`) (last one -- based on greedy vertex coloring of complement graph, officialy not part of the method, tested to check if including of information on weights matters).
+  - `basic` (`b`), `average`(`a`), `maxW`(`m`),`outW` (`ow`), `outN` (`on`), `custom` (`c`) (last one -- based on greedy vertex coloring of complement graph, officially not part of the method, tested to check if including information on weights during the clique building process matters).
   
 - last part: clique relaxation method: `g` for `greedy` method and `c` for `components`. 
 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 if (require(gplots)) heatmap.2(smv_viable, cellnote = round(smv_viable,2))
 
 ```
 
 
-To narrow down the test further, we defined 3 clusters of "ARI similarity":
+To narrow down the test further, we defined 3 clusters of methods according to "ARI similarity":
 
 ```{r}
 methods_by_similarity= list(
-              CS_components=c(
+              CS_components=c(  #methods based on joining by "components"
               "c.mo.on.c","c.mo.ow.c",
               "c.mo.m.c","c.mo.a.c",
-              "c.mo.b.c"),  #methods based on joining by "components"
+              "c.mo.b.c"), 
               greedyJoin_out=c("c.mo.on.g",    #clique relax. by "greedy"
                                "c.mo.ow.g"),   #clique building by considering
                                                #connections "external" to the 
@@ -163,15 +162,15 @@ methods_by_similarity= list(
                       )
 ```
 
-From `greedyJoin_out`, we have chosen outN because it was more
-different to other methods from the two.
+From `greedyJoin_out`, we have chosen outN because it was less similar to other methods from the two.
 
-From the `CS_components` cluster, we took 2 methods because we have subclusters: (`basic`,`average`,`maxW`) and (`outW`, `outN`).
-Again, first subcluster formed because all of the variants consider connections of the vertex that is joined to the clique itself and second one corresponds to the variants that consider its connections outside of it.
-Then, from the first one we chose `basic`, most representative based on its sum of in-cluster similarity and out-cluster similarity,
-and from the "out" subcluster we chose `outW`, because `outN` was already taken from the `greedyJoin_out` cluster.
+From the `CS_components` cluster, we took 2 methods because we have 2 subclusters: (`basic`,`average`,`maxW`) and (`outW`, `outN`).
+Again, first subcluster consists of the variants that from the potential newcomers to the clique choose one which maximizes score derived from weights of its connections to what is already inside of the clique.
+In contrast, second subgroup is formed by variants which calculate this score by considering connections of the vertex to the nodes outside of the clique.
+Then, from the first one we chose `basic`, most representative based on its sum of in-cluster similarities and out-cluster similarities,
+and from the "out" subcluster we chose `outW`, because `outN` was already taken out from the `greedyJoin_out` cluster.
 
-Below code chooses these variants and saves their information for further stability testing and comparisions with WGCNA (it is functionally equivalent to the script of `v1d_viable_method_selection.R`
+Below code chooses these variants and saves their information for further stability testing and comparisons with WGCNA (it is functionally equivalent to the script of `v1d_viable_method_selection.R`)
 
 ```{r}
 representative_variants<-c("c.mo.c.c", "c.mo.c.g",
