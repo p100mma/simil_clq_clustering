@@ -247,3 +247,8 @@ Outputs are saved in files `leuk_clusters/n_genes=<n_genes>_trial=<trial_number>
     - while their versions formatted for easy inclusion into `.tex` file are contained in files: `s_compARI.csv` and `m_compARI.csv`.
     - Plot is in the generated PDF:  ` ARI_clq_dbscan.pdf`.
     - Additionally: script generates two tables that show per each gene number variant and algorithm combination, which thresholding strategy was the best according to IQR of ARI over 100 trials (NA values indicate no clear winner): `simil_based_best_thr_per_algVn_genes.csv`, `clique_based_best_thr_per_algVn_genes.csv`. 
+
+#### Additional FCPS benchmark tests
+- `s3a_dbscan_FCPS.R` - run of DB-scan on chosen benchmark data, `eps` chosen according to method described in depth [here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/DBscan_parameters.html). Outputs `DBscan_FCPS_scores.rds`.
+- `s3b_cliques_FCPS.R` - tests of CliqueSimNet on FCPS benchmark data. Outputs `cliquesOnFCPS.rds`.
+- `s3c_fcps_summary.R` - aggregate results from above tests of clique based clustering and DB-scan into tables and generate visualization plots of the point cloud data. Generates `fcps_results.pdf` and `FCPS_pointClouds.pdf`.
