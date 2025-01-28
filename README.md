@@ -16,7 +16,8 @@ Rendered html of Rmd notebooks in `docs` contain additional docummentation and s
 
 1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
 2. [BRCA_initial_selection](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html) contains summary of our initial comparison of all different variants on gene coexpression networks.
-3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
+3. [DBscan_parameters](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/DBscan_parameters.html) shows how the `eps` parameter for DB-scan was choosen for all the datasets on which it was tested.
+4. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
 
@@ -209,7 +210,7 @@ Afterwards, run each script in the following order (all subsections) to get all 
 
 #### Initial estimation of parameters of DB-scan on Leuk_18
 
-Running scripts there is not strictly necessary but output provides a rationale for our selection of crucial parameters of DB-scan: `eps` and `minPts`. We provide a shorter visual summary in the [RMD FILE linked here]:
+Running scripts there is not strictly necessary but output provides a rationale for our selection of crucial parameters of DB-scan: `eps` and `minPts`. We provide a shorter visual summary in the [RMD FILE linked here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/DBscan_parameters.html):
 
 - `s1a_initial_UMAP.R <n_genes>` computes and saves initial 3D UMAP embeddings for estimating parameters of DB-scan. Should be run with running argument from 1 to 12 (each integer corresponds to different number of genes used to get the low. dim. space):
 ```
@@ -219,7 +220,7 @@ Rscript --no-save s1a_initial_UMAP.R 2
 Rscript --no-save s1a_initial_UMAP.R 12
 ```
 Output is stored in files `leuk_UM/n_genes=<n_genes>_UMkD.rds`. 
-- `s1b_DB_scan_param_est.R <n_genes>` - calulates kNN distances of each point (k:=3-1=2) for the purpose of picking optimal `eps` by "elbow point" method. This script should be run with running argument exactly like the one above. Results are stored in the files `leuk_DB_scan_kNN_curve/n_genes=<n_genes>_kNN_d_curve.rds`. Additionnaly, it produces plots of kNN distances pear each gene number used which are saved as pdf in the same directory.
+- `s1b_DB_scan_param_est.R <n_genes>` - calulates kNN distances of each point (k:=3-1=2) for the purpose of picking optimal `eps` by "elbow point" method. This script should be run with running argument exactly like the one above. Results are stored in the files `leuk_DB_scan_kNN_curve/n_genes=<n_genes>_kNN_d_curve.rds`. Additionaly, it produces plots of kNN distances pear each gene number used which are saved as pdf in the same directory.
 - `s1c_joint_kNN_plot.R` - uses output of the previous script to prepare a joint plot of all kNN distances (from all gene number cutoffs) and saves in a pdf `leuk_DB_scan_kNN_curve/joint_plot.pdf`. All curves (representing sorted kNN distances in UMAP embedding) are plotted on the same axes, to show that the `eps=0.3` value used is universal for all `n_genes` variants.   
 
 #### 100 trials of clustering by different methods 
