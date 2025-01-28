@@ -12,9 +12,9 @@ This respository corresponds to the manuscript submission for ISMB 2025:
 
 This file contains information on input data and implementation of our numerical experiments.
 
-Rendered html of Rmd notebooks in `Rendered_docs` contain additional docummentation and some extended results. In particular:
+Rendered html of Rmd notebooks in `docs` contain additional docummentation and some extended results. In particular:
 
-1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
+1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
 2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
@@ -181,7 +181,7 @@ Rscript --no-save v2b_stability_resample.R 100
 ```
 (we ran this in parallel on HPC cluster, setting minimal RAM requirements to 30 GB). Results are saved in subdirectories `B_200`, `B_1394`. Pattern for filename of outputs from CliqueSimNet is the same as in `v1b` script but contains `<BS_sample_number>` prefix, while output for WGCNA is named `<BS_sample_number>_WGCNA_labels.rds`.
 
--`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of CliqueSimNet ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds` and `v2d_2346_cores.rds` (last file is list of core membership vectors for all of the variants presented in the article computed on original data, for reference).
+-`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of CliqueSimNet ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds` and `v2d_2346_cores.rds` (last file is list of core membership vectors for all of the variants presented in the article computed on original data, for reference).
 
 -`v2e_summarise.R` produces plots:
 
