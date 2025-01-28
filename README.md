@@ -21,7 +21,10 @@ Rendered html of Rmd notebooks in `docs` contain additional docummentation and s
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
 
-Subdirectories `B_200`, `B_1394` ... are set up to contain results from multiple random trials in our experiments.
+Other subdirectories  are set up to cotain results of scripts that were ran over all combinations/random trials:
+ - `B_200`, `B_1394` results from multiple random trials in variable clustering
+ - `leuk_UM`, `leuk_DB_scan_kNN_curve` for storing files for initial tuning of DB-scan on `Leuk_18` dataset
+ -  `leuk_clusters` results from multiple random trials in sample clustering.
 
 ## Data information
 
