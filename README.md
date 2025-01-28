@@ -17,7 +17,7 @@ Rendered html of Rmd notebooks in `docs` contain additional docummentation and s
 1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
 2. [BRCA_initial_selection](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [DBscan_parameters](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/DBscan_parameters.html) shows how the `eps` parameter for DB-scan was choosen for all the datasets on which it was tested.
-4. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
+4. [Leuk_18_tables](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/Leuk_18_full_ARI_table.html) displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
 
@@ -242,7 +242,7 @@ Rscript --no-save s2a_clustering.R 12 100
 ```
 Outputs are saved in files `leuk_clusters/n_genes=<n_genes>_trial=<trial_number>_clusters.rds`.
 - `s2b_cl_summary.R`- aggregates results from all trials ran from previous script. Outputs a file `leuk_clusters_results_aggregated.rds` containing ARIs computed between method-derived and reference clusters for each method, thresholding strategy and gene number used + numerical values of thresholds.
-- `s2c_tables_plots.R` - based on the results of previous scripts above, produces tables of ARI scores on Leuk_18 presented in the publication, along with the plot of comparison of DB-scan with clique based clustering (see [HERE](url_here) for full table over all combinations of thresholds and methods). List of outputs:
+- `s2c_tables_plots.R` - based on the results of previous scripts above, produces tables of ARI scores on Leuk_18 presented in the publication, along with the plot of comparison of DB-scan with clique based clustering (see [HERE](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/Leuk_18_full_ARI_table.html) for full table over all combinations of thresholds and methods). List of outputs:
     - "Raw" tables are contained in files `similarity_based_methods_publication_table.csv` and `metric_based_methods_publication_table.csv`,
     - while their versions formatted for easy inclusion into `.tex` file are contained in files: `s_compARI.csv` and `m_compARI.csv`.
     - Plot is in the generated PDF:  ` ARI_clq_dbscan.pdf`.
