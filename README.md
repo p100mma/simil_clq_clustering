@@ -15,7 +15,7 @@ This file contains information on input data and implementation of our numerical
 Rendered html of Rmd notebooks in `docs` contain additional docummentation and some extended results. In particular:
 
 1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
-2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
+2. [BRCA_initial_selection](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
 `.rds` file contains one of used datasets (another one is on zenodo repository, see below). Provided `.R` scripts reproduce our results fully from theese files. 
@@ -157,7 +157,7 @@ clusters_t_S=<t_S CHOICE VARIANT>;t_CS=<OBJECTIVE FUNCTION>;mode=<CLIQUE EXPANSI
 ```
 each one containing results per each variant. 
 - `v1c_initial_summary.R` - aggregates results over all combinations tested in `v1b_`, outputs `devel_method_runtime_df.rds`, `devel_method_similarity.rds`, `devel_label_vecs.rds`.
-- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds` (listing of parameters of variants to test further) and `clq_reference_modules.rds` (corresponding already computed cluster labels in `v1b`. ) . See [REFERENCE] `.Rmd` file for visualization of results (contains the same code with textual description).
+- `v1d_viable_method_selection.R` - chooses 6 methods we presented based on pairwise similarities between all methods, outputs `vcl_clq_based_variants_to_test.rds` (listing of parameters of variants to test further) and `clq_reference_modules.rds` (corresponding already computed cluster labels in `v1b`. ) . See [here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/docs/BRCA_initial_selection.html)  for visualization of results (contains the same code with textual description).
 
 #### initial WGCNA modules and heatmap comparison
 
@@ -192,3 +192,49 @@ Rscript --no-save v2b_stability_resample.R 100
 
 ### Sample clustering
 
+Remember that this test requires downloading Leuk_18 dataset to the main directory:
+
+```
+curl --output trainLeukemia.RData https://zenodo.org/records/14729079/files/trainLeukemia.RData
+```
+
+
+First, open up the correct docker image:
+```
+sudo docker run -it -v.:/home/ismb_25 r_sub_cl
+```
+
+Afterwards, run each script in the following order (all subsections) to get all of our results:
+
+
+#### Initial estimation of parameters of DB-scan on Leuk_18
+
+Running scripts there is not strictly necessary but output provides a rationale for our selection of crucial parameters of DB-scan: `eps` and `minPts`. We provide a shorter visual summary in the [RMD FILE linked here]:
+
+- `s1a_initial_UMAP.R <n_genes>` computes and saves initial 3D UMAP embeddings for estimating parameters of DB-scan. Should be run with running argument from 1 to 12 (each integer corresponds to different number of genes used to get the low. dim. space):
+```
+Rscript --no-save s1a_initial_UMAP.R 1
+Rscript --no-save s1a_initial_UMAP.R 2
+...
+Rscript --no-save s1a_initial_UMAP.R 12
+```
+Output is stored in files `leuk_UM/n_genes=<n_genes>_UMkD.rds`. 
+- `s1b_DB_scan_param_est.R <n_genes>` - calulates kNN distances of each point (k:=3-1=2) for the purpose of picking optimal `eps` by "elbow point" method. This script should be run with running argument exactly like the one above. Results are stored in the files `leuk_DB_scan_kNN_curve/n_genes=<n_genes>_kNN_d_curve.rds`. Additionnaly, it produces plots of kNN distances pear each gene number used which are saved as pdf in the same directory.
+- `s1c_joint_kNN_plot.R` - uses output of the previous script to prepare a joint plot of all kNN distances (from all gene number cutoffs) and saves in a pdf `leuk_DB_scan_kNN_curve/joint_plot.pdf`. All curves (representing sorted kNN distances in UMAP embedding) are plotted on the same axes, to show that the `eps=0.3` value used is universal for all `n_genes` variants.   
+
+#### 100 trials of clustering by different methods 
+
+- `s2a_clustering.R <n_genes> <trial_number>` - calculates 3D UMAP for gene number `<n_genes>` and trial number `<trial_number>`. This was ran in parallel on our computational cluster (min. memory requirement set to 30 GB). Should be ran with `<n_genes>` running from 1 to 12 and `<trial_number>` running from 1 to 100:
+```
+Rscript --no-save s2a_clustering.R 1 1
+...
+Rscript --no-save s2a_clustering.R 1 100
+Rscript --no-save s2a_clustering.R 2 1
+...
+Rscript --no-save s2a_clustering.R 2 100
+...
+...
+Rscript --no-save s2a_clustering.R 12 100
+```
+Outputs are saved in files `leuk_clusters/n_genes=<n_genes>_trial=<trial_number>_clusters.rds`.
+- `s2b_cl_summary.R`- aggregates results from all trials ran from previous script. Outputs a file `leuk_clusters_results_aggregated.rds` containing ARIs computed between method-derived and reference clusters for each method, thresholding strategy and gene number used + numerical values of thresholds.
