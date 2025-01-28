@@ -1,5 +1,5 @@
 ---
-title: 'SimNetClique: algorithmic overview'
+title: 'CliqueSimNet: algorithmic overview'
 author: "Piotr Stomma"
 output:
   html_document:
@@ -12,12 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # What this file contains
 
-We discuss technical details of SimNetClique which are not obvious only from description of main steps of the algorithm and provide some illustratory examples, which might be helpful for understanding but are too detailed for the main description.
+We discuss technical details of CliqueSimNet which are not obvious only from description of main steps of the algorithm and provide some examples, which might be helpful for understanding but are too detailed for the main description.
 
 ## Purpose of the algorithm
 
 Algorithm is supposed to find clusters according to pairwise similarities between objects. 
-Name stands for similarity network clique based clustering and describes its main mechanism.
+Name stands for Clique based clustering of Similarity Networks and describes its main mechanism.
 
 Input in form an undirected, weighted, unsigned similarity graph $G_{\mathbf{S}}$ is used to produce cluster assignments of its nodes based on weight/similarity matrix $\mathbf{S}$. 
 
@@ -37,7 +37,7 @@ library(cliqueClusteR)
 ### Ad.1 
 
 We described details of clique finiding in docummentation of `cliqueParitioneR` and main manuscript.
-To find optimal threshold by `compexity` of a clique partition, we subject $G_{\mathbf{S}}$ to candidate threshold $t$ and calculate complexity for cliques found on this $t$ (see docs of `cliqueClusteR::thr_optimizer`).
+To find optimal threshold by `compexity` of a clique partition, we subject $G_{\mathbf{S}}$ to candidate threshold $t$ and calculate complexity for cliques found on this $t$ (see `?cliqueClusteR::thr_optimizer`).
 To maximize this function, we follow 2 step procedure, although user can select only one of the steps:
 
 1. Initial exhaustive search over `n_steps` evenly spaced points in the range of weights of matrix $\mathbf{S}$.

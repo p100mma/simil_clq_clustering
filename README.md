@@ -14,7 +14,7 @@ This file contains information on input data and implementation of our numerical
 
 Rendered html of Rmd notebooks in `Rendered_docs` contain additional docummentation and some extended results. In particular:
 
-1. [SimNetClique_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/SimNetClique_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
+1. [CliqueSimNet_overview](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html) contains additional algorithmic details and some motivating examples of properties of cliques found by our methods.
 2. [Initial_selection_summary](https://htmlpreview.github.io/URL_THERE) contains summary of our initial comparison of all different variants on gene coexpression networks.
 3. [Leuk_18_tables]() displays extended table of Adjusted Rand Index of all 14 tested methods under all applicable thresholding scenarios. 
 
@@ -70,7 +70,7 @@ Installation of each package and its usage is docummented in respective reposito
 git clone https://github.com/p100mma/simil_clq_clustering
 ```
 
-2. Inside the main folder of the repository, download 2 dependencies (CliqueNetSim implementation):
+2. Inside the main folder of the repository, download 2 dependencies (CliqueSimNet implementation):
 
 ```
 cd simil_clq_clustering
@@ -87,7 +87,7 @@ curl --output trainLeukemia.RData https://zenodo.org/records/14729079/files/trai
 
 There are 3 dockerfiles:
 
-- `Dock_R_clique` - R with CliqueNetSim and dependencies
+- `Dock_R_clique` - R with CliqueSimNet and dependencies
 - `Dock_var_clusters` - dependencies for variable clustering
 - `Dock_subject_clusters` - dependencies for sample clustering
 
@@ -143,7 +143,7 @@ Afterwards, run each script in the following order (all subsections) to get all 
 
 #### Initial run on whole dataset
 
-- `v1a_similarity_graph.R` -- computes initial correlation network for testing different variants of SimNetClique. outputs `BRCA_similarity_graph.rds`.
+- `v1a_similarity_graph.R` -- computes initial correlation network for testing different variants of CliqueSimNet, outputs `BRCA_similarity_graph.rds`.
 - `v1b_initial_algo_test.R` -- run with integer argument ranging from 1 to 48 to test combinations listed in [REFERENCE]. We ran this part in parallel on computational cluster setting min. memory requirements to 30 GB.
 ```
 Rscript --no-save v1b_initial_algo_test.R 1
@@ -162,7 +162,7 @@ each one containing results per each variant.
 #### initial WGCNA modules and heatmap comparison
 
 - `v1e_WGCNA.R` - computes clusters for 3 different `minSize` parameters, saves results in `WGCNA_labels_fulldata.rds`.
-- `v1f_heatmaps.R <clq_nr> <hmap_size>` - produces gene module heatmap of size `<hmap_size>` visualization for 1 of 6 variants of SimNetClique  tested in article given by `<clq_nr>` argument (and for WGCNA `minSize=30` ). To get the 2 heatmaps from the article, assuming all previous steps have been completed:
+- `v1f_heatmaps.R <clq_nr> <hmap_size>` - produces gene module heatmap of size `<hmap_size>` visualization for 1 of 6 variants of CliqueSimNet tested in article given by `<clq_nr>` argument (and for WGCNA `minSize=30` ). To get the 2 heatmaps from the article, assuming all previous steps have been completed:
 ```
 Rscript --no-save v1f_heatmaps.R 4 500
 ```
@@ -179,9 +179,9 @@ Rscript --no-save v2b_stability_resample.R 2
 ...
 Rscript --no-save v2b_stability_resample.R 100
 ```
-(we ran this in parallel on HPC cluster, setting minimal RAM requirements to 30 GB). Results are saved in subdirectories `B_200`, `B_1394`. Pattern for filename of outputs from SimNetClique is the same as in `v1b` script but contains `<BS_sample_number>` prefix, while output for WGCNA is named `<BS_sample_number>_WGCNA_labels.rds`.
+(we ran this in parallel on HPC cluster, setting minimal RAM requirements to 30 GB). Results are saved in subdirectories `B_200`, `B_1394`. Pattern for filename of outputs from CliqueSimNet is the same as in `v1b` script but contains `<BS_sample_number>` prefix, while output for WGCNA is named `<BS_sample_number>_WGCNA_labels.rds`.
 
--`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of SimNetClique ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds` and `v2d_2346_cores.rds` (last file is list of core membership vectors for all of the variants presented in the article computed on original data, for reference).
+-`v2c_aggregate_resamples.R, v2d_aggregate_cores.R` - computes stability based on resamples from previous step, second script limits this to the `cores` of CliqueSimNet ([see here](https://htmlpreview.github.io/?https://github.com/p100mma/simil_clq_clustering/blob/main/Rendered_docs/CliqueSimNet_overview.html)  for exact definition). Outputs are `v2c_aggregated_stability_results.rds` and `v2d_aggregated_stability_cores.rds` and `v2d_2346_cores.rds` (last file is list of core membership vectors for all of the variants presented in the article computed on original data, for reference).
 
 -`v2e_summarise.R` produces plots:
 
