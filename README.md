@@ -223,7 +223,7 @@ Rscript --no-save s1a_initial_UMAP.R 2
 Rscript --no-save s1a_initial_UMAP.R 12
 ```
 Output is stored in files `leuk_UM/n_genes=<n_genes>_UMkD.rds`. 
-- `s1b_DB_scan_param_est.R <n_genes>` - calulates kNN distances of each point (k:=3-1=2) for the purpose of picking optimal `eps` by "elbow point" method. This script should be run with running argument exactly like the one above. Results are stored in the files `leuk_DB_scan_kNN_curve/n_genes=<n_genes>_kNN_d_curve.rds`. Additionaly, it produces plots of kNN distances pear each gene number used which are saved as pdf in the same directory.
+- `s1b_DB_scan_param_est.R <n_genes>` - calulates kNN distances of each point (k:=3*2-1) for the purpose of picking optimal `eps` by "elbow point" method. This script should be run with running argument exactly like the one above. Results are stored in the files `leuk_DB_scan_kNN_curve/n_genes=<n_genes>_kNN_d_curve.rds`. Additionaly, it produces plots of kNN distances pear each gene number used which are saved as pdf in the same directory.
 - `s1c_joint_kNN_plot.R` - uses output of the previous script to prepare a joint plot of all kNN distances (from all gene number cutoffs) and saves in a pdf `leuk_DB_scan_kNN_curve/joint_plot.pdf`. All curves (representing sorted kNN distances in UMAP embedding) are plotted on the same axes, to show that the `eps=0.3` value used is universal for all `n_genes` variants.   
 
 #### 100 trials of clustering by different methods 
