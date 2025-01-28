@@ -242,7 +242,7 @@ Rscript --no-save s2a_clustering.R 12 100
 ```
 Outputs are saved in files `leuk_clusters/n_genes=<n_genes>_trial=<trial_number>_clusters.rds`.
 - `s2b_cl_summary.R`- aggregates results from all trials ran from previous script. Outputs a file `leuk_clusters_results_aggregated.rds` containing ARIs computed between method-derived and reference clusters for each method, thresholding strategy and gene number used + numerical values of thresholds.
-- `s2c_tables_plots.R` - based on the results of previous scripts above, produces tables of ARI scores on Leuk_18 presented in the publication, along with the plot of comparison of DB-scan with clique based clustering (see [HERE](url_here) for full table over all combinations of thresholds and methods).
+- `s2c_tables_plots.R` - based on the results of previous scripts above, produces tables of ARI scores on Leuk_18 presented in the publication, along with the plot of comparison of DB-scan with clique based clustering (see [HERE](url_here) for full table over all combinations of thresholds and methods). List of outputs:
     - "Raw" tables are contained in files `similarity_based_methods_publication_table.csv` and `metric_based_methods_publication_table.csv`,
     - while their versions formatted for easy inclusion into `.tex` file are contained in files: `s_compARI.csv` and `m_compARI.csv`.
     - Plot is in the generated PDF:  ` ARI_clq_dbscan.pdf`.
