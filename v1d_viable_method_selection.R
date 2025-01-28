@@ -2,6 +2,7 @@ lv<-readRDS("devel_label_vecs.rds")
 sm<-readRDS("devel_method_similarity.rds")
 df<-readRDS("devel_method_runtime_df.rds")
 library(magrittr)
+
 sm_order<-order(colSums(sm))
 smv<- sm[sm_order,sm_order] #visualization purposes
 lapply(lv, function(x) max(table(x)))[sm_order] %>% 
