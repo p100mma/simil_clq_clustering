@@ -82,7 +82,7 @@ heatmap(matr, Colv=NA, Rowv=NA, scale="none", revC=FALSE,
 dev.off()
 }
 
-X<- readRDS("../corsimTest/gh/gene_expr_data.rds")
+X<- readRDS("gene_expr_data.rds")
 X<- X[, kept_gene_idx]
 library(matrixStats)
 source("cor_matmul.R")
