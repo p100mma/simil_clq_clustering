@@ -68,5 +68,5 @@ for (B in 1:N_TRIALS) {
 		}
    ARI_matrices[[i_N]]=ARI_matrix_i_N
 }
-saveRDS(ARI_matrices, "v2d_aggregated_stability_cores_min100.rds")
+saveRDS(ARI_matrices, "v2d_aggregated_stability_cores.rds")
 warnings()

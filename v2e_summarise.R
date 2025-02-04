@@ -1,5 +1,4 @@
 readRDS("v2c_aggregated_stability_results.rds")-> ARI_matrices
-#readRDS("v2c_aggregated_stability_results_min300.rds")-> ARI_matrices
 
 library(reshape2)
 bs_sizes=c(200,1394)
@@ -9,7 +8,7 @@ do.call(rbind,ARI_dfs)->ARI_df
 colnames(ARI_df)<- c("trial","algorithm","ARI","BS_size")
 
 readRDS("v2d_2346_cores.rds")->cores_2346
-readRDS("v2d_aggregated_stability_cores_min100.rds")-> ARI_cores_matrices
+readRDS("v2d_aggregated_stability_cores.rds")-> ARI_cores_matrices
 
 ARI_dfs<- cbind(lapply(ARI_cores_matrices, melt))
 for (i in seq_along(ARI_dfs)) ARI_dfs[[i]]$N<- bs_sizes[[i]]
