@@ -60,7 +60,7 @@ ggplot(sim_df, aes(Var1,Var2, fill=ARI)) +
 dev.off()
   #scale_y_discrete(guide = guide_axis(n.dodge = 2))
 X<-readRDS("gene_expr_data.rds")
-#source("cor_matmul.R")
+source("cor_matmul.R")
 S<- similarity_matrix(fastPearsonData(X))
 lapply(fulldata_clq, function(P)
 cliqueClusteR:::`%modularity%`(S,P)) %>% unlist -> MOD_S_clq
