@@ -12,8 +12,8 @@ for (set in sets2test)
  knn_curve<-sort(kNNdist(db_input, k = 2*ncol(db_input) - 1))
  pdf(sprintf("%s_kNN_curve.pdf",set))
  plot(knn_curve,main=sprintf("%s kNN curve",set))
- dev.off()
  abline(h=db_eps[[set]])
+ dev.off()
  print(set)
  igraph::compare(
    dbscan(db_input, eps=db_eps[[set]], minPts = 2*ncol(db_input))$cluster,
