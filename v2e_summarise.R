@@ -1,6 +1,7 @@
 readRDS("v2c_aggregated_stability_results.rds")-> ARI_matrices
 
 library(reshape2)
+library(matrixStats)
 bs_sizes=c(200,1394)
 ARI_dfs<- cbind(lapply(ARI_matrices, melt))
 for (i in seq_along(ARI_dfs)) ARI_dfs[[i]]$N<- bs_sizes[[i]]
