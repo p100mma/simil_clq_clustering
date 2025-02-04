@@ -2,7 +2,7 @@ library(igraph)
 library(cliqueClusteR)
 N_TRIALS=100
 print("loading data")
-X<- readRDS("/home/p.stomma/corsimTest/gh/gene_expr_data.rds")
+X<- readRDS("gene_expr_data.rds")
 print("loaded data")
 bs_sizes<-c(200,nrow(X))
 readRDS("v_bs_200.rds")-> bs_200
