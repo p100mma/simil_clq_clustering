@@ -3,6 +3,7 @@ FROM r_cliq
 RUN apt-get update && apt-get install -y libglu1-mesa
 
 RUN install2.r --error --skipinstalled --ncpus -1 \
+    dplyr \
     FCPS \
     apcluster \
     dbscan \

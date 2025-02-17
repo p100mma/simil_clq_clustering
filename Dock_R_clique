@@ -19,6 +19,7 @@ RUN install2.r --error --skipinstalled --ncpus -1 \
     magrittr \
     igraph \
     Rcpp \
+    reshape2 \
     devtools 
 
 
